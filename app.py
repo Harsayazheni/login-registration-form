@@ -8,14 +8,18 @@ users = {}
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('home.html')
+
+@app.route('/register')
+def register_page():
+    return render_template('register.html')
 
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    username = data['username']
-    email = data['email']
-    password = generate_password_hash(data['password'], method='sha256')
+    username = data.get('username')
+    email = data.get('email')
+    password = generate_password_hash(data.get('password'), method='sha256')
 
     if username in users:
         return jsonify({'message': 'User already exists'}), 400
@@ -26,8 +30,8 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
-    username = data['username']
-    password = data['password']
+    username = data.get('username')
+    password = data.get('password')
 
     user = users.get(username)
     if user and check_password_hash(user['password'], password):
