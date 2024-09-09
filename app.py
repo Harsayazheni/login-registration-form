@@ -1,5 +1,6 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from werkzeug.security import generate_password_hash, check_password_hash
+import os
 
 app = Flask(__name__)
 
@@ -10,7 +11,7 @@ users = {}
 def index():
     return render_template('home.html')
 
-@app.route('/register')
+@app.route('/register', methods=['GET'])
 def register_page():
     return render_template('register.html')
 
@@ -27,6 +28,10 @@ def register():
     users[username] = {'email': email, 'password': password}
     return jsonify({'message': 'Registration successful'}), 200
 
+@app.route('/login', methods=['GET'])
+def login_page():
+    return render_template('login.html')
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -38,6 +43,10 @@ def login():
         return jsonify({'message': 'Login successful'}), 200
     else:
         return jsonify({'message': 'Login failed'}), 401
+
+@app.route('/static/css/styles.css')
+def serve_static(styles):
+    return send_from_directory(os.path.join(app.root_path, 'static'), styles)
 
 if __name__ == '__main__':
     app.run(debug=True)
