@@ -6,7 +6,7 @@ app = Flask(__name__)
 # Temporary storage for users
 users = {}
 
-@app.route('/home')
+@app.route('/')
 def index():
     return render_template('home.html')
 
