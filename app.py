@@ -28,9 +28,9 @@ def register():
     return jsonify({'message': 'Registration successful'}), 200
 
 # Login page (GET)
-@app.route('/login', methods=['GET'])
+@app.route('/home', methods=['GET'])
 def login_page():
-    return render_template('login.html')
+    return render_template('home.html')
 
 # Login handling (POST)
 @app.route('/login', methods=['POST'])
