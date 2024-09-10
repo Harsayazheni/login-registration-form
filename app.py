@@ -1,8 +1,11 @@
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 
 app = Flask(__name__)
+
+# Global users dictionary (to keep user data persistent during the session)
+users = {}
 
 # Home page
 @app.route('/')
@@ -22,10 +25,11 @@ def register():
     email = data.get('email')
     password = generate_password_hash(data.get('password'))
 
-    users = {}  # In a real app, this should come from a database
+    # Save user data in global dictionary
     users[username] = {'email': email, 'password': password}
     
-    return jsonify({'message': 'Registration successful'}), 200
+    # Redirect to the home page after successful registration
+    return redirect(url_for('index'))
 
 # Login page (GET)
 @app.route('/home', methods=['GET'])
@@ -33,13 +37,13 @@ def login_page():
     return render_template('home.html')
 
 # Login handling (POST)
-@app.route('/home', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
 
-    users = {}  # In a real app, this should come from a database
+    # Check if the user exists
     user = users.get(username)
     
     if user and check_password_hash(user['password'], password):
