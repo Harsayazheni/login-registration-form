@@ -33,7 +33,7 @@ def login_page():
     return render_template('home.html')
 
 # Login handling (POST)
-@app.route('/login', methods=['POST'])
+@app.route('/home', methods=['POST'])
 def login():
     data = request.get_json()
     username = data.get('username')
