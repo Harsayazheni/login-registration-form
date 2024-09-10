@@ -5,11 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = '123456'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'  
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Define User model
+# User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -23,7 +23,7 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
-# Home Route (Redirects to login)
+# Home Route
 @app.route('/')
 def index():
     return redirect(url_for('login'))
@@ -36,9 +36,8 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
-        # Check if email is already registered
         if User.query.filter_by(email=email).first():
-            flash('Email already registered. Please use a different email or log in.')
+            flash('Email already registered.')
         else:
             hashed_password = generate_password_hash(password)
             new_user = User(username=username, email=email, password=hashed_password)
@@ -56,14 +55,13 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        # Check if email exists and password is correct
         user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
-            session['username'] = user.username  # Store username in session
+            session['username'] = user.username
             flash(f'Welcome {user.username}')
             return redirect(url_for('home'))
         else:
-            flash('Login failed. Please check your credentials.')
+            flash('Login failed. Check your credentials.')
 
     return render_template('login.html')
 
@@ -84,4 +82,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
