@@ -34,7 +34,7 @@ def register():
 # Login page (GET)
 @app.route('/home', methods=['GET'])
 def login_page():
-    return render_template('home.html')
+    return render_template('home')
 
 # Login handling (POST)
 @app.route('/home', methods=['POST'])
